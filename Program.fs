@@ -54,6 +54,55 @@ let rec lookup (name : string) (env : Env) : Value =
         if name = n then v
         else lookup name rest
 
+let topEnv : Env =
+    [ Binding("+",         PrimV "+")
+      Binding("-",         PrimV "-")
+      Binding("*",         PrimV "*")
+      Binding("/",         PrimV "/")
+      Binding("<=",        PrimV "<=")
+      Binding("substring", PrimV "substring")
+      Binding("strlen",    PrimV "strlen")
+      Binding("equal?",    PrimV "equal?")
+      Binding("true",      BoolV true)
+      Binding("false",     BoolV false)
+      Binding("error",     PrimV "error") ]
+
+// Format a float the way the language expects: whole numbers print
+// without a trailing ".0", everything else prints normally.
+let formatNum (n: float) : string =
+    if n = floor n && not (System.Double.IsInfinity n) then
+        string (int64 n)        // 34.0 -> "34", -7.0 -> "-7"
+    else
+        string n                // 3.14 -> "3.14"
+
+// serialize : Value -> string
+let serialize (v: Value) : string =
+    match v with
+    | NumV n      -> formatNum n
+    | BoolV true  -> "true"
+    | BoolV false -> "false"
+    | StrV s      -> sprintf "\"%s\"" s
+    | CloV _      -> "#<procedure>"
+    | PrimV _     -> "#<primop>"
+
+// Symbols that cannot be used as identifiers.
+let reservedWords : string list =
+    ["fn"; "->"; "if"; "="; "given"; "do"]
+
+// is this name reserved?
+let isReserved (s: string) : bool =
+    List.contains s reservedWords
+
+// does the list contain any reserved word?
+let containsReserved (lst: string list) : bool =
+    List.exists isReserved lst
+
+// does the list contain a duplicate?
+let rec containsDuplicate (lst: string list) : bool =
+    match lst with
+    | [] -> false
+    | f :: r -> List.contains f r || containsDuplicate r
+
 // INTERPRETER
 // interp : ExprC -> Env -> Value
 let rec interp e env =
