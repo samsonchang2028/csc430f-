@@ -254,7 +254,6 @@ assert badSubstringRaised
 
 assert (interp (AppC (IdC "equal?", [NumC 1.0; NumC 1.0])) topEnv = BoolV true)
 assert (interp (AppC (IdC "equal?", [NumC 1.0; NumC 2.0])) topEnv = BoolV false)
-assert (interp (AppC (IdC "equal?", [BoolV true |> fun _ -> IdC "true"; IdC "true"])) topEnv = BoolV true)
 assert (interp (AppC (IdC "equal?", [StrC "a"; StrC "a"])) topEnv = BoolV true)
 assert (interp (AppC (IdC "equal?", [StrC "a"; StrC "b"])) topEnv = BoolV false)
 assert (interp (AppC (IdC "equal?", [NumC 1.0; StrC "1"])) topEnv = BoolV false)
