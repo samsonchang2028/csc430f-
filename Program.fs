@@ -105,8 +105,8 @@ let rec containsDuplicate (lst: string list) : bool =
 let index_check (n : float) : bool =
     n >= 0.0 && floor n = n
 
-// apply-primitive : Symbol, listof value -> value
-let apply_primitive op args =
+// apply-primitive : String, listof value -> value
+let apply_primitive (op : string)(args: Value list) : Value =
     match op with
     | "+" ->
         match args with 
